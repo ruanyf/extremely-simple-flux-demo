@@ -14,7 +14,7 @@ Visit http://127.0.0.1:8080 with your browser.
 
 Flux is an architecture concept to describe "one way" data flow with the Flux Dispatcher and a Javascript event library.
 
-This demo use [Facebook's official Dispatcher](https://github.com/facebook/flux/blob/master/src/Dispatcher.js) and [MicroEvent.js](http://notes.jetienne.com/2011/03/22/microeventjs.html) as the event library.
+This demo uses [Facebook's official Dispatcher](https://github.com/facebook/flux/blob/master/src/Dispatcher.js) and [MicroEvent.js](http://notes.jetienne.com/2011/03/22/microeventjs.html) as the event library.
 
 ```javascript
 var Dispatcher = require('flux').Dispatcher;
