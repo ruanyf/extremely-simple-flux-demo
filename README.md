@@ -55,6 +55,8 @@ var MicroEvent = require('./lib/MicroEvent.js');
 
 You need a store to keep your state. A store is a singleton, meaning you probably shouldn't declare it with new.
 
+> Stores contain the application state and logic. Their role is somewhat similar to a model in a traditional MVC, but they manage the state of many objects.... More than simply managing a collection of ORM-style objects, stores manage the application state for a particular domain within the application. -- Facebook
+
 ```javascript
 // Global object representing list data and logic
 var ListStore = {
@@ -91,6 +93,8 @@ AppDispatcher.register( function( payload ) {
 ```
 
 The dispatcher only exists to send messages from views to stores.
+
+> When the dispatcher responds to an action, all stores in the application are sent the data payload provided by the action via the callbacks in the registry. ([Facebook’s React page on GitHub](http://facebook.github.io/react/docs/flux-overview.html))
 
 ### Step three: Store Emits a "Change" Event
 
@@ -172,6 +176,18 @@ render: function() {
     </div>;
 }
 ```
+
+### Differences from MVC
+
+(The real problem with MVC is) there's not a lot of consensus for what MVC is exactly - lots of people have different ideas about what it is. What we're really arguing against is bi-directional data flow, where one change can loop back and have cascading effects.
+
+The dispatcher doesn't play the same role as controllers. There's no business logic in the dispatcher, and we use the same dispatcher code in multiple applications. It's just a central hub for events to reach interested subscribers (usually stores). But it's important in Flux because that's where the single-directional data flow is enforced.
+
+A controller can send commands to the model to update the model's state (e.g., editing a document). It can also send commands to its associated view to change the view's presentation of the model (e.g., by scrolling through a document).
+
+A dispatcher cannot do any of that, the commands have to start from somewhere else (views, server responses, live updates) and pass through the dispatcher.
+
+-- Chen Jing, quoted from [MVC Does Not Scale, Use Flux Instead](http://www.infoq.com/news/2014/05/facebook-mvc-flux)
 
 ## License
 
