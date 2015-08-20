@@ -12,6 +12,8 @@ $ npm start
 
 Visit http://127.0.0.1:8080 with your browser.
 
+![](screenshot.png)
+
 ## A Primer on Flux
 
 Flux is an architecture concept to describe "one way" data flow.
@@ -176,7 +178,7 @@ render: function() {
 }
 ```
 
-Now it is done.
+Now it is all done.
 
 ## Afterword: Why Flux is different from MVC?
 
