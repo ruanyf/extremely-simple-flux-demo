@@ -14,7 +14,7 @@ Visit http://127.0.0.1:8080 with your browser.
 
 ![](screenshot.png)
 
-## A Primer on Flux
+## A Short Primer on Flux
 
 Flux is an architecture concept to describe "one way" data flow.
 
