@@ -1,6 +1,4 @@
-This demo helps you learn Flux architecture.
-
-I wroted it inspired by Andrew Ray's great article [Flux For Stupid People](http://blog.andrewray.me/flux-for-stupid-people/).
+This demo helps you learn Flux architecture. It is inspired by Andrew Ray's great article [Flux For Stupid People](http://blog.andrewray.me/flux-for-stupid-people/).
 
 ## What is Flux?
 
