@@ -53,7 +53,7 @@ First thing of all, Flux is usually used with React. So your familiarity with Re
 
 ### Views
 
-Our demo application [`index.jsx`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/index.jsx) has only one component.
+Our demo application's [`index.jsx`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/index.jsx) has only one component.
 
 ```javascript
 // index.jsx
@@ -67,9 +67,9 @@ ReactDOM.render(
 );
 ```
 
-I use React's [controller view pattern](http://blog.andrewray.me/the-reactjs-controller-view-pattern/). A controller view component `MyButtonController` holds all states and pass this data to its descendants.
+In above codes, you might notice our component's name isn't `MyButton`, but `MyButtonController`. Why?
 
-The controller view component [`MyButtonController`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButtonController.jsx) is simple.
+Because I use React's [controller view pattern](http://blog.andrewray.me/the-reactjs-controller-view-pattern/) here. A controller view component `MyButtonController` holds all states,  then passes this data to its descendants. Its [source code](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButtonController.jsx) is simple.
 
 ```javascript
 // components/MyButtonController.jsx
@@ -92,7 +92,7 @@ var MyButton = React.createClass({
 module.exports = MyButton;
 ```
 
-The biggest advantage of controll view is its descendants could be an pure component (means stateless). So our UI component [`MyButton`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButton.jsx) is even more simple.
+In above codes, controller view component `MyButtonController` puts its data into UI component `MyButton`'s properties. `MyButton`'s [source code](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButton.jsx) is even more simple.
 
 ```javascript
 // components/MyButton.jsx
@@ -107,9 +107,13 @@ var MyButton = function(props) {
 module.exports = MyButton;
 ```
 
-In above codes, you could see when user clicks `MyButton`, [`this.createNewItem`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButtonController.jsx#L27) method will be called. It sends an action to Dispatcher.
+In above codes, you could find [`MyButton`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButton.jsx) is a pure component (means stateless), which is really the biggest advantage of the controll view pattern.
+
+The logic of our application is when user clicks `MyButton`, [`this.createNewItem`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButtonController.jsx#L27) method will be called. It sends an action to Dispatcher.
 
 ```javascript
+// components/MyButtonController.jsx
+
   // ...
   createNewItem: function (event) {
     ButtonActions.addNewItem('new item');
