@@ -10,7 +10,7 @@ It is similar to MVC architecture, but Flux's concept is [much clearer](http://w
 
 ## How to Play?
 
-First, install the demo.
+Install the demo.
 
 ```bash
 $ git clone git@github.com:ruanyf/extremely-simple-flux-demo.git
@@ -69,7 +69,7 @@ ReactDOM.render(
 
 In above codes, you might notice our component's name isn't `MyButton`, but `MyButtonController`. Why?
 
-Because I use React's [controller view pattern](http://blog.andrewray.me/the-reactjs-controller-view-pattern/) here. A controller view component `MyButtonController` holds all states,  then passes this data to its descendants. Its [source code](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButtonController.jsx) is simple.
+Because I use React's [controller view pattern](http://blog.andrewray.me/the-reactjs-controller-view-pattern/) here. A controller view component holds all states, then passes this data to its descendants. `MyButtonController`'s [source code](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButtonController.jsx) is simple.
 
 ```javascript
 // components/MyButtonController.jsx
@@ -92,7 +92,7 @@ var MyButton = React.createClass({
 module.exports = MyButton;
 ```
 
-In above codes, controller view component `MyButtonController` puts its data into UI component `MyButton`'s properties. `MyButton`'s [source code](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButton.jsx) is even more simple.
+In above codes, `MyButtonController` puts its data into UI component `MyButton`'s properties. `MyButton`'s [source code](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButton.jsx) is even more simple.
 
 ```javascript
 // components/MyButton.jsx
@@ -109,7 +109,7 @@ module.exports = MyButton;
 
 In above codes, you could find [`MyButton`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButton.jsx) is a pure component (means stateless), which is really the biggest advantage of the controll view pattern.
 
-The logic of our application is when user clicks `MyButton`, [`this.createNewItem`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButtonController.jsx#L27) method will be called. It sends an action to Dispatcher.
+Here, the logic of our application is when user clicks `MyButton`, [`this.createNewItem`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButtonController.jsx#L27) method will be called. It sends an action to Dispatcher.
 
 ```javascript
 // components/MyButtonController.jsx
@@ -142,13 +142,11 @@ var ButtonActions = {
 };
 ```
 
-In above codes, `ButtonActions.addNewItem` method will use `AppDispatcher` to dispathch the action `ADD_NEW_ITEM` to the Stores.
-
-Actions come primarily from the Views, but may also come from other places, such as the server for initialization.
+In above codes, `ButtonActions.addNewItem` method will use `AppDispatcher` to dispatch the action `ADD_NEW_ITEM` to the Stores.
 
 ### Dispatcher
 
-Dispatcher transfers the Actions to the Stores. It is essentially an event hub for your application's Views. There is only ever one, global Dispatcher.
+The Dispatcher transfers the Actions to the Stores. It is essentially an event hub for your application's Views. There is only ever one, global Dispatcher.
 
 We use the [Facebook official Dispatcher Library](https://github.com/facebook/flux), and write a [`AppDispatcher.js`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/dispatcher/AppDispatcher.js) as our application's dispatcher instance.
 
@@ -178,11 +176,11 @@ AppDispatcher.register(function (action) {
 
 In above codes, when receiving the action `ADD_NEW_ITEM`, the callback will operate the `ListStore`.
 
-Dispatcher has no real intelligence of its own — it is a simple mechanism for distributing the actions to the stores.
+Please keep in mind, Dispatcher has no real intelligence of its own — it is a simple mechanism for distributing the actions to the stores.
 
 ### Stores
 
-Stores contain the application state. Their role is somewhat similar to a model in a traditional MVC.
+The Stores contain the application state. Their role is somewhat similar to a model in a traditional MVC.
 
 In this demo, we have a [`ListStore`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/stores/ListStore.js) to store data.
 
@@ -209,7 +207,7 @@ module.exports = ListStore;
 
 In above codes, `ListStore.items` is used for holding items, `ListStore.getAll()` for getting all these items, and `ListStore.emitChange()` for emitting an event to the Views.
 
-Store should implement an event interface. Since after receiving an action from the dispatcher, the Stores should emit a change event to tell the Views that a change to the data layer has occurred.
+The Stores should implement an event interface as well. Since after receiving an action from the Dispatcher, the Stores should emit a change event to tell the Views that a change to the data layer has occurred.
 
 ```javascript
 // stores/ListStore.js
@@ -243,7 +241,7 @@ var ListStore = assign({}, EventEmitter.prototype, {
 
 In above codes, `ListStore` inheritances `EventEmitter.prototype`, so you can use `ListStore.on()` and `ListStore.emit()`.
 
-After updated(`this.addNewItemHandler()`), the Stores emit an event(`this.emitChange()`) declaring that their state has changed, so the views may query the new state and update themselves.
+After updated(`this.addNewItemHandler()`), the Stores emit an event(`this.emitChange()`) declaring that their state has changed, so the Views may query the new state and update themselves.
 
 ### Views, again
 
@@ -290,7 +288,7 @@ var MyButtonController = React.createClass({
 });
 ```
 
-In above codes, you could see when `MyButtonController` finds out the Store's `change` event happening, it calls `this._onChange` to reset the component's state, then trigger an re-render.
+In above codes, you could see when `MyButtonController` finds out the Store's `change` event happening, it calls `this._onChange` to update the component's state, then trigger an re-render.
 
 ```javascript
 // components/MyButton.jsx
