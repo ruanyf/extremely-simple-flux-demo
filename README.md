@@ -2,9 +2,9 @@ This demo helps you learn [Flux architecture](https://facebook.github.io/flux/).
 
 ## What is Flux?
 
-Flux is an architecture pattern for building client-side web applications, which is invented by Facebook.
+Flux, invented by Facebook, is an architecture pattern for building client-side web applications.
 
-It is the same kind of MV\* pattern. They have some similarities, but Flux's concept is [much clearer](http://www.infoq.com/news/2014/05/facebook-mvc-flux) than MV\*'s, and easier to learn.
+It is similar to MVC architecture, but Flux's concept is [much clearer](http://www.infoq.com/news/2014/05/facebook-mvc-flux) than MVC's, and easier to learn.
 
 ![](img/banner.png)
 
@@ -150,7 +150,6 @@ We use the [Facebook official Dispatcher Library](https://github.com/facebook/fl
 
 ```javascript
 // dispatcher/AppDispatcher.js
-
 var Dispatcher = require('flux').Dispatcher;
 module.exports = new Dispatcher();
 ```
