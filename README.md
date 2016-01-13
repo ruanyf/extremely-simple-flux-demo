@@ -1,4 +1,4 @@
-This demo helps you learn Flux architecture. It is inspired by Andrew Ray's great article [Flux For Stupid People](http://blog.andrewray.me/flux-for-stupid-people/).
+This demo helps you learn [Flux architecture](https://facebook.github.io/flux/). It is inspired by Andrew Ray's great article [Flux For Stupid People](http://blog.andrewray.me/flux-for-stupid-people/).
 
 ## What is Flux?
 
@@ -53,7 +53,7 @@ First thing of all, Flux is usually used with React. So your familiarity with Re
 
 ### Views
 
-Our demo application has only one component `MyButton`.
+Our demo application [`index.jsx`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/index.jsx) has only one component.
 
 ```javascript
 // index.jsx
@@ -67,16 +67,21 @@ ReactDOM.render(
 );
 ```
 
-I use React's [controller view pattern](http://blog.andrewray.me/the-reactjs-controller-view-pattern/) to hold all states and pass this data to its descendants.
+I use React's [controller view pattern](http://blog.andrewray.me/the-reactjs-controller-view-pattern/). A controller view component `MyButtonController` holds all states and pass this data to its descendants.
 
-The component `MyButtonController` is simple.
+The controller view component [`MyButtonController`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButtonController.jsx) is simple.
 
 ```javascript
 // components/MyButtonController.jsx
 var React = require('react');
+var ButtonActions = require('../actions/ButtonActions');
 var MyButton = require('./MyButton');
 
 var MyButton = React.createClass({
+  createNewItem: function (event) {
+    ButtonActions.addNewItem('new item');
+  },
+
   render: function() {
     return <MyButton
       onClick={this.createNewItem}
@@ -87,9 +92,7 @@ var MyButton = React.createClass({
 module.exports = MyButton;
 ```
 
-The biggest advantage of controll view is its descendants could be an pure component (means stateless).
-
-So our UI component `MyButtonController` is even more simple.
+The biggest advantage of controll view is its descendants could be an pure component (means stateless). So our UI component [`MyButton`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButton.jsx) is even more simple.
 
 ```javascript
 // components/MyButton.jsx
@@ -104,19 +107,13 @@ var MyButton = function(props) {
 module.exports = MyButton;
 ```
 
-In above codes, you could see when user clicks `MyButton`, `this.createNewItem` method will be called. It sends an action to Dispatcher.
+In above codes, you could see when user clicks `MyButton`, [`this.createNewItem`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButtonController.jsx#L27) method will be called. It sends an action to Dispatcher.
 
 ```javascript
-// components/MyButtonController.jsx
-var ButtonActions = require('../actions/ButtonActions');
-
-var MyButtonController = React.createClass({
   // ...
-
   createNewItem: function (event) {
     ButtonActions.addNewItem('new item');
   }
-});
 ```
 
 In above codes, calling `createNewItem` method will trigger an `addNewItem` action.
@@ -125,7 +122,7 @@ In above codes, calling `createNewItem` method will trigger an `addNewItem` acti
 
 An action is an object which has some properties to carry data and an `actionType` property to identify the action type.
 
-In our demo, the `ButtonActions` object is the place we hold all actions.
+In our demo, the [`ButtonActions`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/actions/ButtonActions.js) object is the place we hold all actions.
 
 ```javascript
 // actions/ButtonActions.js
@@ -149,7 +146,7 @@ Actions come primarily from the Views, but may also come from other places, such
 
 Dispatcher transfers the Actions to the Stores. It is essentially an event hub for your application's Views. There is only ever one, global Dispatcher.
 
-We use the [Facebook official Dispatcher Library](https://github.com/facebook/flux), and write a `AppDispatcher.js` as our application's dispatcher instance.
+We use the [Facebook official Dispatcher Library](https://github.com/facebook/flux), and write a [`AppDispatcher.js`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/dispatcher/AppDispatcher.js) as our application's dispatcher instance.
 
 ```javascript
 // dispatcher/AppDispatcher.js
@@ -184,7 +181,7 @@ Dispatcher has no real intelligence of its own — it is a simple mechanism for 
 
 Stores contain the application state. Their role is somewhat similar to a model in a traditional MVC.
 
-In this demo, we have a `ListStore` to store data.
+In this demo, we have a [`ListStore`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/stores/ListStore.js) to store data.
 
 ```javascript
 // stores/ListStore.js
@@ -247,7 +244,7 @@ After updated(`this.addNewItemHandler()`), the Stores emit an event(`this.emitCh
 
 ### Views, again
 
-Now, we come back to the Views for implementing an callback for listening the Store's `change` event.
+Now, we come back to [the Views](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButtonController.jsx) for implementing an callback for listening the Store's `change` event.
 
 ```javascript
 // components/MyButtonController.jsx
@@ -290,7 +287,7 @@ var MyButtonController = React.createClass({
 });
 ```
 
-In above codes, you could see when `MyButtonController` finds the Store's `change` event happening, it will call `this._onChange` to reset the component's state, then trigger an re-render.
+In above codes, you could see when `MyButtonController` finds out the Store's `change` event happening, it calls `this._onChange` to reset the component's state, then trigger an re-render.
 
 ```javascript
 // components/MyButton.jsx
