@@ -4,7 +4,7 @@ This demo helps you learn Flux architecture. It is inspired by Andrew Ray's grea
 
 Flux is an architecture pattern for building client-side web applications, which is invented by Facebook.
 
-You could regard it as the same kind of MV\* pattern. They have some similarities, but Flux's concept is [much clearer](http://www.infoq.com/news/2014/05/facebook-mvc-flux) than MV\*'s, and easier to learn.
+It is the same kind of MV\* pattern. They have some similarities, but Flux's concept is [much clearer](http://www.infoq.com/news/2014/05/facebook-mvc-flux) than MV\*'s, and easier to learn.
 
 ![](img/banner.png)
 
@@ -20,30 +20,28 @@ $ npm start
 
 Visit http://127.0.0.1:8080 with your browser.
 
-![](img/screenshot.png)
-
-Click the button. That's all.
-
 ![](img/screenshot1.png)
+
+You should see a button. Click it. That's all.
 
 ## Core Concepts
 
-According to Flux's pattern, an application's logics should be divided into four parts.
+According to Flux, an application should be divided into four parts.
 
 > - **Views**: the UI layer
-> - **Actions**: messages sent from View (e.g. mouseClick)
+> - **Actions**: messages sent from Views (e.g. mouseClick)
 > - **Dispatcher**: a place receiving actions, and calling callbacks
-> - **Stores**: a place managing the Application's data and business logic
+> - **Stores**: a place managing the Application's state, and reminding Views to update
+
+![](img/dataflow.png)
 
 The key feature of Flux archetecture is "one way" (unidirectional) data flow.
 
 > 1. User interacts with Views
-> 1. Views propagate an action triggered by user
-> 1. Dispatcher receives the action and updates the store
+> 1. Views propagate an Action triggered by user
+> 1. Dispatcher receives the Action and updates the Store
 > 1. Store emits a "change" event
-> 1. Views respond to the "change" event and updates itself
-
-![](img/dataflow.png)
+> 1. Views respond to the "change" event and update itself
 
 Doesn't get it? Take it easy. I will give you the details soon.
 
