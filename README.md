@@ -6,13 +6,15 @@ Flux is an architecture pattern for building client-side web applications, which
 
 You could regard it as the same kind of MV\* pattern. They have some similarities, but Flux's concept is [much clearer](http://www.infoq.com/news/2014/05/facebook-mvc-flux) than MV\*'s, and easier to learn.
 
+![](img/banner.png)
+
 ## How to Play?
 
 First, install the demo.
 
 ```bash
-$ git clone git@github.com:ruanyf/flux-for-stupid-people-demo.git
-$ cd flux-for-stupid-people-demo && npm install
+$ git clone git@github.com:ruanyf/extremely-simple-flux-demo.git
+$ cd extremely-simple-flux-demo && npm install
 $ npm start
 ```
 
@@ -22,14 +24,16 @@ Visit http://127.0.0.1:8080 with your browser.
 
 Click the button. That's all.
 
+![](img/screenshot1.png)
+
 ## Core Concepts
 
 According to Flux's pattern, an application's logics should be divided into four parts.
 
-> - View: the UI layer
-> - Actions: messages sent from View (e.g. mouseClick)
-> - Dispatcher: a place receiving actions, and calling callbacks
-> - Store: a place managing the Application's data and business logic
+> - **Views**: the UI layer
+> - **Actions**: messages sent from View (e.g. mouseClick)
+> - **Dispatcher**: a place receiving actions, and calling callbacks
+> - **Stores**: a place managing the Application's data and business logic
 
 The key feature of Flux archetecture is "one way" (unidirectional) data flow.
 
