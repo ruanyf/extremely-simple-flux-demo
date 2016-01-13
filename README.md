@@ -1,8 +1,16 @@
-This demo is intended as a simplest example for learning Flux architecture.
+This demo helps you learn Flux architecture.
 
-I implemented it according to Andrew Ray's great article [Flux For Stupid People](http://blog.andrewray.me/flux-for-stupid-people/). If you know nothing about Flux, you should read it.
+I wroted it inspired by Andrew Ray's great article [Flux For Stupid People](http://blog.andrewray.me/flux-for-stupid-people/).
 
-## How to use
+## What is Flux?
+
+Flux is an architecture pattern for building client-side web applications, which is invented by Facebook.
+
+You could regard it as the same kind of MV\* pattern. They have some similarities, but Flux's concept is [much clearer](http://www.infoq.com/news/2014/05/facebook-mvc-flux) than MV\*'s, and easier to learn.
+
+## How to Play?
+
+First, install the demo.
 
 ```bash
 $ git clone git@github.com:ruanyf/flux-for-stupid-people-demo.git
@@ -12,189 +20,296 @@ $ npm start
 
 Visit http://127.0.0.1:8080 with your browser.
 
-![](screenshot.png)
+![](img/screenshot.png)
 
-## A Short Primer on Flux
+Click the button. That's all.
 
-Flux is an architecture concept to describe "one way" data flow.
+## Core Concepts
 
-'One way' means that data flows as follows.
+According to Flux's pattern, an application's logics should be divided into four parts.
 
-1. Action triggers Dispatcher
-1. Dispatcher updates Stores
-1. Store Emits a "Change" Event
-1. View Responds to the "Change" Event
+> - View: the UI layer
+> - Actions: messages sent from View (e.g. mouseClick)
+> - Dispatcher: a place receiving actions, and calling callbacks
+> - Store: a place managing the Application's data and business logic
 
-### Step 1: Action triggers Dispatcher
+The key feature of Flux archetecture is "one way" (unidirectional) data flow.
 
-Action means user's actions. For example, a user clicks on a button.
+> 1. User interacts with Views
+> 1. Views propagate an action triggered by user
+> 1. Dispatcher receives the action and updates the store
+> 1. Store emits a "change" event
+> 1. Views respond to the "change" event and updates itself
 
-```html
-<button onClick={ this.createNewItem }>New Item</button>
-```
+![](img/dataflow.png)
 
-It triggers the Dispatcher.
+Doesn't get it? Take it easy. I will give you the details soon.
+
+## Demo Details
+
+Now let us follow the demo to learn Flux.
+
+First thing of all, Flux is usually used with React. So your familiarity with React is assumed. If not so, I prepare a [React tutorial](https://github.com/ruanyf/react-demos) for you.
+
+### Views
+
+Our demo application has only one component `MyButton`.
 
 ```javascript
-  createNewItem: function( evt ) {
-    AppDispatcher.dispatch({
-      eventName: 'new-item',
-      newItem: { name: 'Marco' } // example data
-    });
+// index.jsx
+var React = require('react');
+var ReactDOM = require('react-dom');
+var MyButtonController = require('./components/MyButtonController');
+
+ReactDOM.render(
+  <MyButtonController/>,
+  document.querySelector('#example')
+);
+```
+
+I use React's [controller view pattern](http://blog.andrewray.me/the-reactjs-controller-view-pattern/) to hold all states and pass this data to its descendants.
+
+The component `MyButtonController` is simple.
+
+```javascript
+// components/MyButtonController.jsx
+var React = require('react');
+var MyButton = require('./MyButton');
+
+var MyButton = React.createClass({
+  render: function() {
+    return <MyButton
+      onClick={this.createNewItem}
+    />;
   }
+});
+
+module.exports = MyButton;
 ```
 
-The Dispatcher this demo uses is [Facebook's official Dispatcher](https://github.com/facebook/flux/blob/master/src/Dispatcher.js).
+The biggest advantage of controll view is its descendants could be an pure component (means stateless).
+
+So our UI component `MyButtonController` is even more simple.
 
 ```javascript
-var Dispatcher = require('flux').Dispatcher;
-```
+// components/MyButton.jsx
+var React = require('react');
 
-### Step 2: Dispatcher updates Stores
-
-The Dispatcher contacts the Store.
-
-> What is a Store?
->
-> A store is the place to keep your state and data. Its role is somewhat similar to a model in a traditional MVC, but they manage the state of the components.
->
-> A store is a singleton, meaning you probably shouldn't declare it with new.
-
-Your Store then responds to the Dispatcher.
-
-```javascript
-var ListStore = {
-
-  // Actual collection of model data
-  items: [],
-
-  // Accessor method we'll use later
-  getAll: function() {
-    return this.items;
-  }
-
+var MyButton = function(props) {
+  return <div>
+    <button onClick={props.onClick}>New Item</button>
+  </div>;
 };
 
-AppDispatcher.register( function( payload ) {
-
-  switch( payload.eventName ) {
-
-    case 'new-item':
-      // We get to mutate data!
-      ListStore.items.push( payload.newItem );
-      break;
-
-    // other eventName
-    // ......
-
-    }
-
-  return true; // Needed for Flux promise resolution
-
-});
+module.exports = MyButton;
 ```
 
-`AppDispatcher.register` method is used to register a callback for `AppDispatcher.dispatch`.
-
-### Step 3: Store emits a "Change" Event
-
-After the Store is updated, it should emit a event.
-
-It means the Store should have the ability to trigger events. But it doesn't use the Dispatcher, but another event library. This is confusing, but it's the Flux way.
-
-In this demo, we use [MicroEvent.js](http://notes.jetienne.com/2011/03/22/microeventjs.html) as the event library.
+In above codes, you could see when user clicks `MyButton`, `this.createNewItem` method will be called. It sends an action to Dispatcher.
 
 ```javascript
-var MicroEvent = require('./lib/MicroEvent.js');
-MicroEvent.mixin( ListStore );
-```
+// components/MyButtonController.jsx
+var ButtonActions = require('../actions/ButtonActions');
 
-Then let's trigger the change event in the Dispatcher.
+var MyButtonController = React.createClass({
+  // ...
 
-```javascript
-AppDispatcher.register( function( payload ) {
-  switch( payload.eventName ) {
-
-    case 'new-item':
-      ListStore.items.push( payload.newItem );
-      // Tell the world we changed!
-      ListStore.trigger( 'change' );
-      break;
-    // other eventName
-    // ......
-
+  createNewItem: function (event) {
+    ButtonActions.addNewItem('new item');
   }
-
-  return true; // Needed for Flux promise resolution
 });
 ```
 
-### Step 4: View Responds to the "Change" Event
+In above codes, calling `createNewItem` method will trigger an `addNewItem` action.
 
-The View listens for the `change` event from the Store when the component "mounts", which is when the component is first created.
+### What is Actions?
+
+An action is an object which has some properties to carry data and an `actionType` property to identify the action type.
+
+In our demo, the `ButtonActions` object is the place we hold all actions.
 
 ```javascript
-componentDidMount: function() {
-  ListStore.bind( 'change', this.listChanged );
-},
+// actions/ButtonActions.js
+var AppDispatcher = require('../dispatcher/AppDispatcher');
 
-listChanged: function() {
-  // Since the list changed, trigger a new render.
-  this.forceUpdate();
-},
-
-componentWillUnmount: function() {
-  ListStore.unbind( 'change', this.listChanged );
-},
+var ButtonActions = {
+  addNewItem: function (text) {
+    AppDispatcher.dispatch({
+      actionType: 'ADD_NEW_ITEM',
+      text: text
+    });
+  },
+};
 ```
 
-Finally, the View's render function.
+In above codes, `ButtonActions.addNewItem` method will use `AppDispatcher` to dispathch the action `ADD_NEW_ITEM` to the Stores.
+
+Actions come primarily from the Views, but may also come from other places, such as the server for initialization.
+
+### Dispatcher
+
+Dispatcher transfers the Actions to the Stores. It is essentially an event hub for your application's Views. There is only ever one, global Dispatcher.
+
+We use the [Facebook official Dispatcher Library](https://github.com/facebook/flux), and write a `AppDispatcher.js` as our application's dispatcher instance.
 
 ```javascript
-render: function() {
+// dispatcher/AppDispatcher.js
 
-  // Remember, ListStore is global!
-  // There's no need to pass it around
-  var items = ListStore.getAll();
+var Dispatcher = require('flux').Dispatcher;
+module.exports = new Dispatcher();
+```
 
-  // Build list items markup by looping
-  // over the entire list
-  var itemHtml = items.map( function( listItem ) {
+`AppDispatcher.register()` is used for registering a callback for actions.
 
-    // "key" is important, should be a unique
-    // identifier for each list item
-    return <li key={ listItem.id }>
-      { listItem.name }
-    </li>;
+```javascript
+// dispatcher/AppDispatcher.js
+var ListStore = require('../stores/ListStore');
 
+AppDispatcher.register(function (action) {
+  switch(action.actionType) {
+    case 'ADD_NEW_ITEM':
+      ListStore.addNewItemHandler(action.text);
+      ListStore.emitChange();
+      break;
+    default:
+      // no op
+  }
+})
+```
+
+In above codes, when receiving the action `ADD_NEW_ITEM`, the callback will operate the `ListStore`.
+
+Dispatcher has no real intelligence of its own — it is a simple mechanism for distributing the actions to the stores.
+
+### Stores
+
+Stores contain the application state. Their role is somewhat similar to a model in a traditional MVC.
+
+In this demo, we have a `ListStore` to store data.
+
+```javascript
+// stores/ListStore.js
+var ListStore = {
+  items: [],
+
+  getAll: function() {
+    return this.items;
+  },
+
+  addNewItemHandler: function (text) {
+    this.items.push(text);
+  },
+
+  emitChange: function () {
+    this.emit('change');
+  }
+};
+
+module.exports = ListStore;
+```
+
+In above codes, `ListStore.items` is used for holding items, `ListStore.getAll()` for getting all these items, and `ListStore.emitChange()` for emitting an event to the Views.
+
+Store should implement an event interface. Since after receiving an action from the dispatcher, the Stores should emit a change event to tell the Views that a change to the data layer has occurred.
+
+```javascript
+// stores/ListStore.js
+var EventEmitter = require('events').EventEmitter;
+var assign = require('object-assign');
+
+var ListStore = assign({}, EventEmitter.prototype, {
+  items: [],
+
+  getAll: function () {
+    return this.items;
+  },
+
+  addNewItemHandler: function (text) {
+    this.items.push(text);
+  },
+
+  emitChange: function () {
+    this.emit('change');
+  },
+
+  addChangeListener: function(callback) {
+    this.on('change', callback);
+  },
+
+  removeChangeListener: function(callback) {
+    this.removeListener('change', callback);
+  }
+});
+```
+
+In above codes, `ListStore` inheritances `EventEmitter.prototype`, so you can use `ListStore.on()` and `ListStore.emit()`.
+
+After updated(`this.addNewItemHandler()`), the Stores emit an event(`this.emitChange()`) declaring that their state has changed, so the views may query the new state and update themselves.
+
+### Views, again
+
+Now, we come back to the Views for implementing an callback for listening the Store's `change` event.
+
+```javascript
+// components/MyButtonController.jsx
+var React = require('react');
+var ListStore = require('../stores/ListStore');
+var ButtonActions = require('../actions/ButtonActions');
+var MyButton = require('./MyButton');
+
+var MyButtonController = React.createClass({
+  getInitialState: function () {
+    return {
+      items: ListStore.getAll()
+    };
+  },
+
+  componentDidMount: function() {
+    ListStore.addChangeListener(this._onChange);
+  },
+
+  componentWillUnmount: function() {
+    ListStore.removeChangeListener(this._onChange);
+  },
+
+  _onChange: function () {
+    this.setState({
+      items: ListStore.getAll()
+    });
+  },
+
+  createNewItem: function (event) {
+    ButtonActions.addNewItem('new item');
+  },
+
+  render: function() {
+    return <MyButton
+      items={this.state.items}
+      onClick={this.createNewItem}
+    />;
+  }
+});
+```
+
+In above codes, you could see when `MyButtonController` finds the Store's `change` event happening, it will call `this._onChange` to reset the component's state, then trigger an re-render.
+
+```javascript
+// components/MyButton.jsx
+var React = require('react');
+
+var MyButton = function(props) {
+  var items = props.items;
+  var itemHtml = items.map(function (listItem, i) {
+    return <li key={i}>{listItem}</li>;
   });
 
-  return (
-    <div>
-      <ul>{ itemHtml }</ul>
-      <button onClick={ this.createNewItem }>New Item</button>
-    </div>
-  );
-}
+  return <div>
+    <ul>{itemHtml}</ul>
+    <button onClick={props.onClick}>New Item</button>
+  </div>;
+};
+
+module.exports = MyButton;
 ```
-
-Now it is all done.
-
-## Afterword: Why Flux is different from MVC?
-
-The real problem with MVC is ...
-
-> There's not a lot of consensus for what MVC is exactly - lots of people have different ideas about what it is.
->
-> A controller can send commands to the model to update the model's state (e.g., editing a document). It can also send commands to its associated view to change the view's presentation of the model (e.g., by scrolling through a document).
-
-Flux is really arguing against this kind of bi-directional data flow.
-
-> In Flux, the single-directional data flow is enforced.
->
-> The dispatcher is just a central hub for events to reach your stores. It doesn't play the same role as controllers. There's no business logic in the dispatcher.
->
-> ([Quoted](http://www.infoq.com/news/2014/05/facebook-mvc-flux) from Chen Jing, the creator of Flux)
 
 ## License
 
