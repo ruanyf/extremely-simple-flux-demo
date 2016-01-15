@@ -77,7 +77,7 @@ var React = require('react');
 var ButtonActions = require('../actions/ButtonActions');
 var MyButton = require('./MyButton');
 
-var MyButton = React.createClass({
+var MyButtonController = React.createClass({
   createNewItem: function (event) {
     ButtonActions.addNewItem('new item');
   },
@@ -89,7 +89,7 @@ var MyButton = React.createClass({
   }
 });
 
-module.exports = MyButton;
+module.exports = MyButtonController;
 ```
 
 In above codes, `MyButtonController` puts its data into UI component `MyButton`'s properties. `MyButton`'s [source code](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButton.jsx) is even more simple.
