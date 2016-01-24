@@ -22,7 +22,7 @@ Visit http://127.0.0.1:8080 with your browser.
 
 ![](img/screenshot1.png)
 
-You should see a button. Click it. That's all.
+You should see a button. Click on it. That's all.
 
 ## Core Concepts
 
@@ -35,7 +35,7 @@ According to Flux, an application should be divided into four parts.
 
 ![](img/dataflow.png)
 
-The key feature of Flux archetecture is "one way" (unidirectional) data flow.
+The key feature of the Flux archetecture is "one way" (unidirectional) data flow.
 
 > 1. User interacts with Views
 > 1. Views propagate an Action triggered by user
@@ -43,13 +43,13 @@ The key feature of Flux archetecture is "one way" (unidirectional) data flow.
 > 1. Store emits a "change" event
 > 1. Views respond to the "change" event and update itself
 
-Doesn't get it? Take it easy. I will give you the details soon.
+Don't get it? Take it easy. I will give you the details soon.
 
 ## Demo Details
 
 Now let us follow the demo to learn Flux.
 
-First thing of all, Flux is usually used with React. So your familiarity with React is assumed. If not so, I prepare a [React tutorial](https://github.com/ruanyf/react-demos) for you.
+First of all, Flux is usually used with React. So your familiarity with React is assumed. If not, I prepared a [React tutorial](https://github.com/ruanyf/react-demos) for you.
 
 ### Views
 
@@ -67,7 +67,7 @@ ReactDOM.render(
 );
 ```
 
-In above codes, you might notice our component's name isn't `MyButton`, but `MyButtonController`. Why?
+In the code above, you might notice our component's name isn't `MyButton`, but `MyButtonController`. Why?
 
 Because I use React's [controller view pattern](http://blog.andrewray.me/the-reactjs-controller-view-pattern/) here. A controller view component holds all states, then passes this data to its descendants. `MyButtonController`'s [source code](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButtonController.jsx) is simple.
 
@@ -92,7 +92,7 @@ var MyButtonController = React.createClass({
 module.exports = MyButtonController;
 ```
 
-In above codes, `MyButtonController` puts its data into UI component `MyButton`'s properties. `MyButton`'s [source code](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButton.jsx) is even more simple.
+In the code above, `MyButtonController` puts its data into UI component `MyButton`'s properties. `MyButton`'s [source code](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButton.jsx) is even simpler.
 
 ```javascript
 // components/MyButton.jsx
@@ -107,9 +107,9 @@ var MyButton = function(props) {
 module.exports = MyButton;
 ```
 
-In above codes, you could find [`MyButton`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButton.jsx) is a pure component (means stateless), which is really the biggest advantage of the controll view pattern.
+In the code above, you may find [`MyButton`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButton.jsx) is a pure component (meaning stateless), which is really the biggest advantage of the controll view pattern.
 
-Here, the logic of our application is when user clicks `MyButton`, [`this.createNewItem`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButtonController.jsx#L27) method will be called. It sends an action to Dispatcher.
+Here, the logic of our application is when user clicks on `MyButton`, the [`this.createNewItem`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/components/MyButtonController.jsx#L27) method will be called. It sends an action to Dispatcher.
 
 ```javascript
 // components/MyButtonController.jsx
@@ -120,9 +120,9 @@ Here, the logic of our application is when user clicks `MyButton`, [`this.create
   }
 ```
 
-In above codes, calling `createNewItem` method will trigger an `addNewItem` action.
+In the code above, calling the `createNewItem` method will trigger an `addNewItem` action.
 
-### What is Actions?
+### What is an Action?
 
 An action is an object which has some properties to carry data and an `actionType` property to identify the action type.
 
@@ -142,11 +142,11 @@ var ButtonActions = {
 };
 ```
 
-In above codes, `ButtonActions.addNewItem` method will use `AppDispatcher` to dispatch the action `ADD_NEW_ITEM` to the Stores.
+In the code above, the `ButtonActions.addNewItem` method will use `AppDispatcher` to dispatch the `ADD_NEW_ITEM` action to the Stores.
 
 ### Dispatcher
 
-The Dispatcher transfers the Actions to the Stores. It is essentially an event hub for your application's Views. There is only ever one, global Dispatcher.
+The Dispatcher transfers the Actions to the Stores. It is essentially an event hub for your application's Views. There is only one global Dispatcher.
 
 We use the [Facebook official Dispatcher Library](https://github.com/facebook/flux), and write a [`AppDispatcher.js`](https://github.com/ruanyf/extremely-simple-flux-demo/blob/master/dispatcher/AppDispatcher.js) as our application's dispatcher instance.
 
@@ -174,9 +174,9 @@ AppDispatcher.register(function (action) {
 })
 ```
 
-In above codes, when receiving the action `ADD_NEW_ITEM`, the callback will operate the `ListStore`.
+In the code above, when receiving the `ADD_NEW_ITEM` action, the callback will operate the `ListStore`.
 
-Please keep in mind, Dispatcher has no real intelligence of its own — it is a simple mechanism for distributing the actions to the stores.
+Please keep in mind, Dispatcher has no real intelligence on its own — it is a simple mechanism for distributing the actions to the stores.
 
 ### Stores
 
@@ -205,7 +205,7 @@ var ListStore = {
 module.exports = ListStore;
 ```
 
-In above codes, `ListStore.items` is used for holding items, `ListStore.getAll()` for getting all these items, and `ListStore.emitChange()` for emitting an event to the Views.
+In the code above, `ListStore.items` is used for holding items, `ListStore.getAll()` for getting all these items, and `ListStore.emitChange()` for emitting an event to the Views.
 
 The Stores should implement an event interface as well. Since after receiving an action from the Dispatcher, the Stores should emit a change event to tell the Views that a change to the data layer has occurred.
 
@@ -239,7 +239,7 @@ var ListStore = assign({}, EventEmitter.prototype, {
 });
 ```
 
-In above codes, `ListStore` inheritances `EventEmitter.prototype`, so you can use `ListStore.on()` and `ListStore.emit()`.
+In the code above, `ListStore` inheritances `EventEmitter.prototype`, so you can use `ListStore.on()` and `ListStore.emit()`.
 
 After updated(`this.addNewItemHandler()`), the Stores emit an event(`this.emitChange()`) declaring that their state has changed, so the Views may query the new state and update themselves.
 
@@ -288,7 +288,7 @@ var MyButtonController = React.createClass({
 });
 ```
 
-In above codes, you could see when `MyButtonController` finds out the Store's `change` event happening, it calls `this._onChange` to update the component's state, then trigger an re-render.
+In the code above, you could see when `MyButtonController` finds out the Store's `change` event occurred, it calls `this._onChange` to update the component's state, then trigger a re-render.
 
 ```javascript
 // components/MyButton.jsx
