@@ -1,7 +1,7 @@
 {
-  "name": "flux-for-stupid-people-demo",
+  "name": "extremely-simple-flux-demo",
   "version": "1.0.0",
-  "description": "Demo for the article 'Flux For Stupid People'",
+  "description": "an extremely simple demo for the Flux architecture",
   "main": "index.jsx",
   "scripts": {
     "start": "webpack-dev-server --progress",
