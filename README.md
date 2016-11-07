@@ -35,7 +35,7 @@ According to Flux, an application should be divided into four parts.
 
 ![](img/dataflow.png)
 
-The key feature of the Flux archetecture is "one way" (unidirectional) data flow.
+The key feature of the Flux architecture is "one way" (unidirectional) data flow.
 
 > 1. User interacts with Views
 > 1. Views propagate an Action triggered by user
